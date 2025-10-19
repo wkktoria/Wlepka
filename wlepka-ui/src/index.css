@@ -1,23 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap");
 
-:root {
-  --primary-color: #588157;
-  --hover-color: #3a5a40;
-  --bg-light: #f7fafc;
-  --text-dark: #2d3748;
-  --border-color: #d1d5db;
-  --dark-border-color: #4b5563;
-  --shadow-color: rgba(0, 0, 0, 0.05);
-  --hover-shadow-color: rgba(0, 0, 0, 0.1);
-  --card-bg: #ffffff;
-  --dark-card-bg: #1f2937;
-  --padding-x: 24px;
-  --padding-y: 16px;
-  --font-family: "Josefin Sans", sans-serif;
-  --font-weight-bold: 700;
-  --font-size-lg: 1.125rem;
-}
-
 body {
   font-family: var(--font-family);
   background-color: var(--bg-light);

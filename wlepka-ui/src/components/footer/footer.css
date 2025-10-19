@@ -6,7 +6,7 @@
 }
 
 .footer a {
-  color: #588157;
+  color: var(--primary-color);
   font-weight: 600;
   padding: 0 0.25rem;
   text-decoration: none;
@@ -14,7 +14,7 @@
 }
 
 .footer a:hover {
-  color: #1a202c;
+  color: var(--text-dark);
 }
 
 .footer-icon {
