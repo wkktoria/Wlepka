@@ -1,5 +1,6 @@
 import { faShoppingBasket, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./header.css";
 
 const Header = () => {
   return (
