@@ -1,7 +1,6 @@
 package io.github.wkktoria.wlepka.controller;
 
 import io.github.wkktoria.wlepka.dto.ProductDto;
-import io.github.wkktoria.wlepka.entity.Product;
 import io.github.wkktoria.wlepka.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
