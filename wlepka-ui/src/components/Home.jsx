@@ -4,7 +4,7 @@ import ProductListings from "./ProductListings";
 
 export default function Home() {
   return (
-    <div className="home-container">
+    <div className="max-w-[1152px] mx-auto px-6 py-8">
       <PageHeading title="Poznaj nasze wlepki">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quasi
         distinctio repellat eligendi quam ducimus repudiandae ullam nostrum
