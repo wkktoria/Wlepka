@@ -1,16 +1,26 @@
 package io.github.wkktoria.wlepka.controller;
 
+import io.github.wkktoria.wlepka.entity.Product;
+import io.github.wkktoria.wlepka.repository.ProductRepository;
+import io.github.wkktoria.wlepka.service.IProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/products")
+@RequiredArgsConstructor
 public class ProductController {
 
+    private final IProductService productService;
+
     @GetMapping
-    public String getProducts() {
-        return "Produkciki";
+    public List<Product> getProducts() {
+        List<Product> productList = productService.getProducts();
+        return productList;
     }
 
 }
