@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Dropdown from "./Dropdown";
 import ProductCard from "./ProductCard";
 import SearchBox from "./SearchBox";
@@ -9,32 +9,29 @@ export default function ProductListings({ products }) {
   const [searchText, setSearchText] = useState("");
   const [selectedSort, setSelectedSort] = useState(sortList[0]);
 
-  let filteredAndSortedProducts = Array.isArray(products)
-    ? products.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchText.toLowerCase())
-      )
-    : [];
+  const filteredAndSortedProducts = useMemo(() => {
+    if (!Array.isArray(products)) {
+      return [];
+    }
 
-  switch (selectedSort) {
-    case sortList[2]:
-      filteredAndSortedProducts = filteredAndSortedProducts.sort(
-        (a, b) => parseFloat(b.price) - parseFloat(a.price)
-      );
-      break;
-    case sortList[1]:
-      filteredAndSortedProducts = filteredAndSortedProducts.sort(
-        (a, b) => parseFloat(a.price) - parseFloat(b.price)
-      );
-      break;
-    case sortList[0]:
-    default:
-      filteredAndSortedProducts = filteredAndSortedProducts.sort(
-        (a, b) => parseInt(b.popularity) - parseInt(a.popularity)
-      );
-      break;
-  }
+    let filteredProducts = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    return filteredProducts.slice().sort((a, b) => {
+      switch (selectedSort) {
+        case sortList[2]:
+          return parseFloat(b.price) - parseFloat(a.price);
+        case sortList[1]:
+          return parseFloat(a.price) - parseFloat(b.price);
+        case sortList[0]:
+        default:
+          return parseInt(b.popularity) - parseInt(a.popularity);
+      }
+    });
+  }, [products, searchText, selectedSort]);
 
   const handleSearchChange = (inputSearch) => {
     setSearchText(inputSearch);
