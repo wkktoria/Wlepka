@@ -28,6 +28,9 @@ public class Contact {
     @Column(name = "mobile_number", nullable = false, length = 9)
     private String mobileNumber;
 
+    @Column(name = "message", nullable = false, length = 500)
+    private String message;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
