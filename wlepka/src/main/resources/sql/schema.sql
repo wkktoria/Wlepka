@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS contacts
     name VARCHAR(30) NOT NULL,
     email VARCHAR(100) NOT NULL,
     mobile_number VARCHAR(9) NOT NULL,
-    message VARCHAR(500),
+    message VARCHAR(500) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     created_by VARCHAR(20) NOT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
