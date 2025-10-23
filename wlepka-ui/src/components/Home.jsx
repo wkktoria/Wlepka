@@ -1,47 +1,10 @@
 import PageHeading from "./PageHeading";
 import ProductListings from "./ProductListings";
 import apiClient from "../api/apiClient";
-import { useEffect, useState } from "react";
+import { useLoaderData } from "react-router-dom";
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const response = await apiClient.get("/products");
-      setProducts(response.data);
-    } catch (error) {
-      setError(
-        error.response?.data?.message ||
-          "Nie udało się załadować produktów. Spróbuj ponownie."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="text-xl font-semibold">Ładowanie produktów...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="text-xl text-red-500">Wystąpił błąd: {error}</span>
-      </div>
-    );
-  }
+  const products = useLoaderData();
 
   return (
     <div className="max-w-[1152px] mx-auto px-6 py-8">
@@ -53,4 +16,18 @@ export default function Home() {
       <ProductListings products={products} />
     </div>
   );
+}
+
+export async function productsLoader() {
+  try {
+    const response = await apiClient.get("/products");
+    return response.data;
+  } catch (error) {
+    throw new Response(
+      error.message || "Nie udało się załadować produktów. Spróbuj ponownie.",
+      {
+        status: error.status || 500,
+      }
+    );
+  }
 }
