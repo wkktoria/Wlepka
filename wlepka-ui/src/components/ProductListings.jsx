@@ -57,7 +57,7 @@ export default function ProductListings({ products }) {
           handleSort={(value) => handleSortChange(value)}
         />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gapy-8 gap-x-6 py-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-6 py-12">
         {filteredAndSortedProducts.length > 0 ? (
           filteredAndSortedProducts.map((product) => (
             <ProductCard key={product.productId} product={product} />
