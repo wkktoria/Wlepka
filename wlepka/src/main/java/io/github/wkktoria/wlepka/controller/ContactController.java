@@ -3,6 +3,8 @@ package io.github.wkktoria.wlepka.controller;
 import io.github.wkktoria.wlepka.dto.ContactRequestDto;
 import io.github.wkktoria.wlepka.service.IContactService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +18,10 @@ public class ContactController {
     private final IContactService contactService;
 
     @PostMapping
-    public String saveContact(@RequestBody final ContactRequestDto contactRequestDto) {
-        boolean isSaved = contactService.saveContact(contactRequestDto);
-
-        if (isSaved) {
-            return "Wiadomość została wysłana.";
-        } else {
-            return "Wystąpił błąd. Spróbuj ponownie.";
-        }
+    public ResponseEntity<String> saveContact(@RequestBody final ContactRequestDto contactRequestDto) {
+        contactService.saveContact(contactRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Wiadomość została wysłana.");
     }
 
 }
