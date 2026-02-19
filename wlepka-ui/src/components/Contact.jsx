@@ -144,10 +144,12 @@ export async function contactAction({ request, params }) {
     return { success: true };
   } catch (error) {
     throw new Response(
-      error.message || "Nie udało się wysłać wiadomości. Spróbuj ponownie.",
+      error.response?.data?.errorMessage ||
+        error.message ||
+        "Nie udało się wysłać wiadomości. Spróbuj ponownie.",
       {
         status: error.status || 500,
-      }
+      },
     );
   }
 }

@@ -24,10 +24,12 @@ export async function productsLoader() {
     return response.data;
   } catch (error) {
     throw new Response(
-      error.message || "Nie udało się załadować produktów. Spróbuj ponownie.",
+      error.response?.data?.errorMessage ||
+        error.message ||
+        "Nie udało się załadować produktów. Spróbuj ponownie.",
       {
         status: error.status || 500,
-      }
+      },
     );
   }
 }
