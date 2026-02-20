@@ -3,6 +3,7 @@ package io.github.wkktoria.wlepka.exception;
 import io.github.wkktoria.wlepka.dto.ErrorResponseDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,11 +19,13 @@ import java.util.Map;
 import java.util.Set;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGlobalException(final Exception exception,
                                                                   final WebRequest request) {
+        log.error("An exception occurred due to: {}", exception.getMessage());
         final ErrorResponseDto errorResponseDto = ErrorResponseDto.builder()
                 .apiPath(request.getDescription(false))
                 .errorCode(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -35,8 +38,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(final MethodArgumentNotValidException exception,
-                                                                         final WebRequest request) {
+    public ResponseEntity<Map<String, String>> handleValidationException(final MethodArgumentNotValidException exception) {
+        log.error("An exception occurred due to: {}", exception.getMessage());
         Map<String, String> errors = new HashMap<>();
         List<FieldError> fieldErrorList = exception.getBindingResult().getFieldErrors();
         fieldErrorList.forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
@@ -44,8 +47,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> handleConstraintViolationException(final ConstraintViolationException exception,
-                                                                                  final WebRequest request) {
+    public ResponseEntity<Map<String, String>> handleConstraintViolationException(final ConstraintViolationException exception) {
+        log.error("An exception occurred due to: {}", exception.getMessage());
         Map<String, String> errors = new HashMap<>();
         Set<ConstraintViolation<?>> constraintViolationSet = exception.getConstraintViolations();
         constraintViolationSet.forEach(constraintViolation ->
