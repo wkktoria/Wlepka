@@ -2,6 +2,7 @@ package io.github.wkktoria.wlepka.controller;
 
 import io.github.wkktoria.wlepka.dto.ContactRequestDto;
 import io.github.wkktoria.wlepka.service.IContactService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ContactController {
     private final IContactService contactService;
 
     @PostMapping
-    public ResponseEntity<String> saveContact(@RequestBody final ContactRequestDto contactRequestDto) {
+    public ResponseEntity<String> saveContact(@Valid @RequestBody final ContactRequestDto contactRequestDto) {
         contactService.saveContact(contactRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Wiadomość została wysłana.");
