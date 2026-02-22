@@ -7,11 +7,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useCart } from "../../store/cart-context";
 
 const Header = () => {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") === "dark" ? "dark" : "light";
   });
+
+  const { totalQuantity } = useCart();
 
   useEffect(() => {
     if (theme === "dark") {
@@ -100,8 +103,17 @@ const Header = () => {
               </NavLink>
             </li>
             <li>
-              <Link to="/cart" className="text-primary py-2 dark:text-light">
-                <FontAwesomeIcon icon={faShoppingBasket} />
+              <Link
+                to="/cart"
+                className="text-primary dark:text-light relative py-2"
+              >
+                <FontAwesomeIcon
+                  icon={faShoppingBasket}
+                  className="text-primary dark:text-light w-6"
+                />
+                <div className="absolute -top-2 -right-6 text-xs bg-yellow-400 text-black font-semibold rounded-full px-2 py-1 leading-none">
+                  {totalQuantity}
+                </div>
               </Link>
             </li>
           </ul>
