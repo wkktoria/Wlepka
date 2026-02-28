@@ -17,7 +17,7 @@ export default function ProductListings({ products }) {
     let filteredProducts = products.filter(
       (product) =>
         product.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchText.toLowerCase())
+        product.description.toLowerCase().includes(searchText.toLowerCase()),
     );
 
     return filteredProducts.slice().sort((a, b) => {
@@ -63,7 +63,7 @@ export default function ProductListings({ products }) {
             <ProductCard key={product.productId} product={product} />
           ))
         ) : (
-          <p className="text-center font-primary font-bold text-lg text-primary">
+          <p className="text-center font-primary font-bold text-lg text-primary dark:text-light">
             Brak wlepek.
           </p>
         )}
