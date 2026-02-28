@@ -49,7 +49,7 @@ export default function CartTable() {
                 </Link>
               </td>
               <td className="px-4 sm:px-6 py-4 text-base font-light">
-                ${item.price.toFixed(2)}
+                {item.price.toFixed(2)} zł
               </td>
               <td className="px-4 sm:px-6 py-4">
                 <input
