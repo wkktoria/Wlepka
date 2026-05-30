@@ -1,17 +1,39 @@
-import { Link } from "react-router-dom";
+import {
+  Form,
+  Link,
+  useActionData,
+  useNavigation,
+  useNavigate,
+} from "react-router-dom";
 import PageTitle from "./PageTitle";
+import apiClient from "../api/apiClient";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function Login() {
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  const navigate = useNavigate();
+  const isSubmitting = navigation.state === "submitting";
+
   const labelStyle =
     "block text-lg font-semibold text-primary dark:text-light mb-2";
   const textFieldStyle =
     "w-full px-4 py-2 text-base border rounded-md transition border-primary dark:border-light focus:ring focus:ring-dark dark:focus:ring-lighter focus:outline-none text-gray-800 dark:text-lighter bg-white dark:bg-gray-600 placeholder-gray-400 dark:placeholder-gray-300";
 
+  useEffect(() => {
+    if (actionData?.success) {
+      navigate("/home");
+    } else if (actionData?.errors) {
+      toast.error(actionData.errors.message || "Logowanie nie powiodło się.");
+    }
+  }, [actionData]);
+
   return (
     <div className="min-h-[852px] flex items-center justify-center font-primary dark:bg-darkbg">
       <div className="bg-white dark:bg-gray-700 shadow-md rounded-lg max-w-md w-full px-8 py-6">
         <PageTitle title="Zaloguj się" />
-        <form className="space-y-6">
+        <Form method="post" className="space-y-6">
           <div>
             <label htmlFor="username" className={labelStyle}>
               Nazwa użytkownika
@@ -21,6 +43,7 @@ export default function Login() {
               name="username"
               type="text"
               placeholder="Twoja nazwa użytkownika"
+              autoComplete="username"
               required
               className={textFieldStyle}
             />
@@ -34,6 +57,7 @@ export default function Login() {
               name="password"
               type="password"
               placeholder="Twoja hasło"
+              autoComplete="current-password"
               required
               minLength={8}
               className={textFieldStyle}
@@ -42,12 +66,13 @@ export default function Login() {
           <div>
             <button
               type="submit"
+              disabled={isSubmitting}
               className="w-full px-6 py-2 text-white dark:text-black text-xl rounded-md transition duration-200 bg-primary dark:bg-light hover:bg-dark dark:hover:bg-lighter"
             >
-              Zaloguj się
+              {isSubmitting ? "Logowanie..." : "Zaloguj się"}
             </button>
           </div>
-        </form>
+        </Form>
         <p className="text-center text-gray-600 dark:text-gray-400 mt-4">
           Nie masz konta?{" "}
           <Link
@@ -61,4 +86,32 @@ export default function Login() {
       </div>
     </div>
   );
+}
+
+export async function loginAction({ request }) {
+  const data = await request.formData();
+
+  const loginData = {
+    username: data.get("username"),
+    password: data.get("password"),
+  };
+
+  try {
+    const response = await apiClient.post("/auth/login", loginData);
+    const { message, user, token } = response.data;
+    return { success: true, message, user, token };
+  } catch (error) {
+    if (error.response?.status === 401) {
+      return {
+        success: false,
+        errors: { message: "Nieprawidłowa nazwa użytkownika lub hasło." },
+      };
+    }
+    throw new Response(
+      error.response?.data?.message ||
+        error.message ||
+        "Nieudało się zalogować. Spróbuj ponownie.",
+      { status: error.response?.status || 500 },
+    );
+  }
 }
