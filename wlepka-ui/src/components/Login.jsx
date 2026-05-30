@@ -9,11 +9,14 @@ import PageTitle from "./PageTitle";
 import apiClient from "../api/apiClient";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "../store/auth-context";
 
 export default function Login() {
   const actionData = useActionData();
   const navigation = useNavigation();
   const navigate = useNavigate();
+  const { loginSuccess } = useAuth();
+
   const isSubmitting = navigation.state === "submitting";
 
   const labelStyle =
@@ -23,6 +26,7 @@ export default function Login() {
 
   useEffect(() => {
     if (actionData?.success) {
+      loginSuccess(actionData.token, actionData.user);
       navigate("/home");
     } else if (actionData?.errors) {
       toast.error(actionData.errors.message || "Logowanie nie powiodło się.");

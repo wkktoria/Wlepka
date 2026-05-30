@@ -25,9 +25,12 @@ export default function Cart() {
               >
                 Powrót do strony głównej
               </Link>
-              <button className="py-2 px-4 bg-primary dark:bg-light text-white dark:text-black text-xl font-semibold rounded-sm flex justify-center items-center hover:bg-dark dark:hover:bg-lighter transition">
+              <Link
+                to="/checkout"
+                className="py-2 px-4 bg-primary dark:bg-light text-white dark:text-black text-xl font-semibold rounded-sm flex justify-center items-center hover:bg-dark dark:hover:bg-lighter transition"
+              >
                 Przejdź do płatności
-              </button>
+              </Link>
             </div>
           </>
         ) : (

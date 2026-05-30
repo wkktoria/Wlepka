@@ -21,6 +21,8 @@ import { contactAction } from "./components/Contact.jsx";
 import { Bounce, ToastContainer } from "react-toastify";
 import ProductDetail from "./components/ProductDetail.jsx";
 import { CartContext, CartProvider } from "./store/cart-context.jsx";
+import { AuthProvider } from "./store/auth-context.jsx";
+import CheckoutForm from "./components/CheckoutForm.jsx";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
@@ -30,6 +32,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/contact" element={<Contact />} action={contactAction} />
     <Route path="/login" element={<Login />} action={loginAction} />
     <Route path="/cart" element={<Cart />} />
+    <Route path="/checkout" element={<CheckoutForm />} />
     <Route path="/products/:productId" element={<ProductDetail />} />
   </Route>,
 );
@@ -38,9 +41,11 @@ const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <CartProvider>
-      <RouterProvider router={appRouter} />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <RouterProvider router={appRouter} />
+      </CartProvider>
+    </AuthProvider>
     <ToastContainer
       position="top-center"
       autoClose={3000}
