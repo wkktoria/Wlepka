@@ -16,6 +16,7 @@ export default function Login() {
   const navigation = useNavigation();
   const navigate = useNavigate();
   const { loginSuccess } = useAuth();
+  const to = sessionStorage.getItem("redirectPath") || "/home";
 
   const isSubmitting = navigation.state === "submitting";
 
@@ -27,7 +28,8 @@ export default function Login() {
   useEffect(() => {
     if (actionData?.success) {
       loginSuccess(actionData.token, actionData.user);
-      navigate("/home");
+      sessionStorage.removeItem("redirectPath");
+      navigate(to);
     } else if (actionData?.errors) {
       toast.error(actionData.errors.message || "Logowanie nie powiodło się.");
     }
