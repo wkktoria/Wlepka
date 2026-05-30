@@ -1,20 +1,34 @@
 import {
+  faAngleDown,
   faMoon,
   faShoppingBasket,
   faSun,
   faTags,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../../store/cart-context";
+import { useAuth } from "../../store/auth-context";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") === "dark" ? "dark" : "light";
   });
 
+  const isAdmin = true;
+  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+  const [isAdminMenuOpen, setAdminMenuOpen] = useState(false);
+
+  const { isAuthenticated, logout } = useAuth();
   const { totalQuantity } = useCart();
+  const location = useLocation();
+  const userMenuRef = useRef();
+  const navigate = useNavigate();
+
+  const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
+  const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
 
   useEffect(() => {
     if (theme === "dark") {
@@ -22,10 +36,24 @@ const Header = () => {
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, []);
+
+    setAdminMenuOpen(false);
+    setUserMenuOpen(false);
+
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setAdminMenuOpen(false);
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+  }, [theme, location.pathname]);
 
   const navLinkClass =
     "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
+  const dropdownLinkClass =
+    "block w-full text-left px-4 py-2 text-lg font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
 
   const toggleTheme = () => {
     setTheme((prevTheme) => {
@@ -41,6 +69,13 @@ const Header = () => {
 
       return newTheme;
     });
+  };
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    logout();
+    toast.success("Zostałeś pomyślnie Wylogowany!");
+    navigate("/home");
   };
 
   return (
@@ -69,7 +104,7 @@ const Header = () => {
                   isActive ? `underline ${navLinkClass}` : navLinkClass
                 }
               >
-                Home
+                Strona główna
               </NavLink>
             </li>
             <li>
@@ -79,7 +114,7 @@ const Header = () => {
                   isActive ? `underline ${navLinkClass}` : navLinkClass
                 }
               >
-                About
+                O nas
               </NavLink>
             </li>
             <li>
@@ -89,18 +124,89 @@ const Header = () => {
                   isActive ? `underline ${navLinkClass}` : navLinkClass
                 }
               >
-                Contact
+                Kontakt
               </NavLink>
             </li>
             <li>
-              <NavLink
-                to="/login"
-                className={({ isActive }) =>
-                  isActive ? `underline ${navLinkClass}` : navLinkClass
-                }
-              >
-                Login
-              </NavLink>
+              {isAuthenticated ? (
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={toggleUserMenu}
+                    className="relative text-primary"
+                  >
+                    <span className={navLinkClass}>Witaj, Jan Kowalski</span>
+                    <FontAwesomeIcon
+                      icon={faAngleDown}
+                      className="text-primary dark:text-light w-6 h-6"
+                    />
+                  </button>
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 w-48 bg-normalbg dark:bg-darkbg border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20 transition ease-in-out duration-200">
+                      <ul className="py-2">
+                        <li>
+                          <Link to="/profile" className={dropdownLinkClass}>
+                            Profil
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/orders" className={dropdownLinkClass}>
+                            Zamówienia
+                          </Link>
+                        </li>
+                        {isAdmin && (
+                          <li>
+                            <button
+                              onClick={toggleAdminMenu}
+                              className={`${dropdownLinkClass} flex items-center justify-between`}
+                            >
+                              Admin
+                              <FontAwesomeIcon icon={faAngleDown} />
+                            </button>
+                            {isAdminMenuOpen && (
+                              <ul className="ml-4 mt-2 space-y-2">
+                                <li>
+                                  <Link
+                                    to="/admin/orders"
+                                    className={dropdownLinkClass}
+                                  >
+                                    Zamówienia
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link
+                                    to="/admin/messages"
+                                    className={dropdownLinkClass}
+                                  >
+                                    Wiadomości
+                                  </Link>
+                                </li>
+                              </ul>
+                            )}
+                          </li>
+                        )}
+                        <li>
+                          <Link
+                            to="/logout"
+                            onClick={handleLogout}
+                            className={dropdownLinkClass}
+                          >
+                            Wyloguj się
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) =>
+                    isActive ? `underline ${navLinkClass}` : navLinkClass
+                  }
+                >
+                  Zaloguj się
+                </NavLink>
+              )}
             </li>
             <li>
               <Link
