@@ -23,6 +23,7 @@ import ProductDetail from "./components/ProductDetail.jsx";
 import { CartContext, CartProvider } from "./store/cart-context.jsx";
 import { AuthProvider } from "./store/auth-context.jsx";
 import CheckoutForm from "./components/CheckoutForm.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
@@ -32,8 +33,10 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/contact" element={<Contact />} action={contactAction} />
     <Route path="/login" element={<Login />} action={loginAction} />
     <Route path="/cart" element={<Cart />} />
-    <Route path="/checkout" element={<CheckoutForm />} />
     <Route path="/products/:productId" element={<ProductDetail />} />
+    <Route element={<ProtectedRoute />}>
+      <Route path="/checkout" element={<CheckoutForm />} />
+    </Route>
   </Route>,
 );
 
