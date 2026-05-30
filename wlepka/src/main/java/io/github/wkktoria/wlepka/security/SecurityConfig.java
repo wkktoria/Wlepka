@@ -47,12 +47,12 @@ class SecurityConfig {
     UserDetailsService userDetailsService() {
         UserDetails user = User.builder()
                 .username("wkktoria")
-                .password("$2a$12$SEKD02DbhwCVU.EiVYhZVOB5wOow08hUQ995s3BDB.4PJHrqFwJ7e")
+                .password("$2a$12$jK7Ekfve4x/sFgxWOrchNuelud19ADCQF4XRIaE2tIhoS.FvhgP8.")
                 .roles("USER")
                 .build();
         UserDetails admin = User.builder()
                 .username("admin")
-                .password("$2a$12$K2BrnQynFPafkS/ru4Q/quGG3D8Hwr/ACtwgY5hKb9rpCCwyh0Kvu")
+                .password("$2a$12$FLmEQzzAp6hGz6Qyeoj9tORWGIRyHNldjxvYSYpiHrAftld7gOMFK")
                 .roles("USER", "ADMIN")
                 .build();
 
