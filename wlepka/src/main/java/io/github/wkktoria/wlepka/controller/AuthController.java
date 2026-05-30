@@ -1,5 +1,6 @@
 package io.github.wkktoria.wlepka.controller;
 
+import io.github.wkktoria.wlepka.dto.UserDto;
 import io.github.wkktoria.wlepka.dto.request.LoginRequestDto;
 import io.github.wkktoria.wlepka.dto.response.LoginResponseDto;
 import io.github.wkktoria.wlepka.util.JwtUtil;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +32,16 @@ class AuthController {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginRequestDto.username(), loginRequestDto.password()
             ));
+
+            User loggedInUser = (User) authentication.getPrincipal();
+
+            UserDto userDto = UserDto.builder()
+                    .name(loggedInUser.getUsername())
+                    .build();
+
             String token = jwtUtil.generateJwt(authentication);
 
-            return ResponseEntity.ok(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), null, token));
+            return ResponseEntity.ok(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, token));
         } catch (BadCredentialsException ex) {
             return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Nieprawidłowa nazwa użytkownika lub hasło.");
         } catch (AuthenticationException ex) {
