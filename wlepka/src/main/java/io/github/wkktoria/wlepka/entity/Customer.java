@@ -1,10 +1,12 @@
 package io.github.wkktoria.wlepka.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +33,8 @@ public class Customer extends BaseEntity {
 
     @Column(name = "password_hash", length = 500, nullable = false)
     private String passwordHash;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Address address;
 
 }
