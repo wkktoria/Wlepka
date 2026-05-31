@@ -42,4 +42,7 @@ public class Address {
     @Column(name = "postal_code", length = 6, nullable = false)
     private String postalCode;
 
+    @Column(name = "country", length = 30, nullable = false)
+    private String country;
+
 }
