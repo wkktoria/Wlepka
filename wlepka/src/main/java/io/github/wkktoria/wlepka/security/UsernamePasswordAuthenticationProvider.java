@@ -1,4 +1,4 @@
-package io.github.wkktoria.wlepka.service;
+package io.github.wkktoria.wlepka.security;
 
 import io.github.wkktoria.wlepka.entity.Customer;
 import io.github.wkktoria.wlepka.repository.CustomerRepository;
