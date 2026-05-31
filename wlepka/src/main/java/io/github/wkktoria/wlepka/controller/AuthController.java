@@ -7,6 +7,7 @@ import io.github.wkktoria.wlepka.dto.response.LoginResponseDto;
 import io.github.wkktoria.wlepka.dto.response.RegisterResponseDto;
 import io.github.wkktoria.wlepka.entity.Customer;
 import io.github.wkktoria.wlepka.repository.CustomerRepository;
+import io.github.wkktoria.wlepka.service.ICustomerService;
 import io.github.wkktoria.wlepka.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final CustomerRepository customerRepository;
-    private final CompromisedPasswordChecker compromisedPasswordChecker;
-    private final PasswordEncoder passwordEncoder;
+    private final ICustomerService customerService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
@@ -69,44 +64,15 @@ class AuthController {
 
     @PostMapping("/register")
     ResponseEntity<RegisterResponseDto> apiRegister(@Valid @RequestBody final RegisterRequestDto registerRequestDto) {
-        CompromisedPasswordDecision passwordDecision = compromisedPasswordChecker.check(registerRequestDto.password());
+        RegisterResponseDto registerResponseDto = customerService.registerUser(registerRequestDto);
 
-        if (passwordDecision.isCompromised()) {
+        if (!registerResponseDto.errors().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RegisterResponseDto.builder()
-                            .errors(Map.of("password", "Wybierz silne hasło."))
-                            .build());
+                    .body(registerResponseDto);
         }
-
-        Optional<Customer> existingCustomer = customerRepository
-                .findByEmailOrMobileNumber(registerRequestDto.email(), registerRequestDto.mobileNumber());
-
-        if (existingCustomer.isPresent()) {
-            Map<String, String> errors = new HashMap<>();
-            Customer customer = existingCustomer.get();
-
-            if (customer.getEmail().equalsIgnoreCase(registerRequestDto.email())) {
-                errors.put("email", "Podany adres e-mail jest już w użyciu.");
-            }
-
-            if (customer.getMobileNumber().equalsIgnoreCase(registerRequestDto.mobileNumber())) {
-                errors.put("mobileNumber", "Podany numer telefonu jest już w użyciu.");
-            }
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RegisterResponseDto.builder()
-                    .errors(errors)
-                    .build());
-        }
-
-        Customer customer = new Customer();
-        BeanUtils.copyProperties(registerRequestDto, customer);
-        customer.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
-        customerRepository.save(customer);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(RegisterResponseDto.builder()
-                        .message("Zarejestrowano pomyślnie!")
-                        .build());
+                .body(registerResponseDto);
     }
 
     private ResponseEntity<LoginResponseDto> buildErrorResponse(final HttpStatus status, final String message) {
