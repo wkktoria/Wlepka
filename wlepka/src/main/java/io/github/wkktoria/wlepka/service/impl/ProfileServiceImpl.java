@@ -1,10 +1,13 @@
 package io.github.wkktoria.wlepka.service.impl;
 
+import io.github.wkktoria.wlepka.dto.request.UpdateProfileRequestDto;
 import io.github.wkktoria.wlepka.dto.response.ProfileResponseDto;
+import io.github.wkktoria.wlepka.entity.Address;
 import io.github.wkktoria.wlepka.entity.Customer;
 import io.github.wkktoria.wlepka.repository.CustomerRepository;
 import io.github.wkktoria.wlepka.service.IProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +23,32 @@ public class ProfileServiceImpl implements IProfileService {
     public ProfileResponseDto getProfile() {
         Customer customer = getAuthenticatedCustomer();
         return mapCustomerToProfileResponseDto(customer);
+    }
+
+    @Override
+    public ProfileResponseDto updateProfile(final UpdateProfileRequestDto updateProfileRequestDto) {
+        Customer customer = getAuthenticatedCustomer();
+        boolean isEmailUpdated = !customer.getEmail().equalsIgnoreCase(updateProfileRequestDto.email().trim());
+        BeanUtils.copyProperties(updateProfileRequestDto, customer);
+
+        Address address = customer.getAddress();
+        if (address == null) {
+            address = new Address();
+            address.setCustomer(customer);
+        }
+
+        address.setStreet(updateProfileRequestDto.street());
+        address.setCity(updateProfileRequestDto.city());
+        address.setState(updateProfileRequestDto.state());
+        address.setPostalCode(updateProfileRequestDto.postalCode());
+        address.setCountry(updateProfileRequestDto.country());
+        customer.setAddress(address);
+        customer = customerRepository.save(customer);
+
+        ProfileResponseDto profileResponseDto = mapCustomerToProfileResponseDto(customer);
+        profileResponseDto.setEmailUpdated(isEmailUpdated);
+
+        return profileResponseDto;
     }
 
     private Customer getAuthenticatedCustomer() {

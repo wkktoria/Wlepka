@@ -191,7 +191,7 @@ export default function Profile() {
               name="country"
               placeholder="Kraj"
               required
-              minLength={5}
+              minLength={3}
               maxLength={30}
               className={textFieldStyle}
               value={profileData.country}

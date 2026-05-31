@@ -74,7 +74,7 @@ const Header = () => {
   const handleLogout = (event) => {
     event.preventDefault();
     logout();
-    toast.success("Zostałeś pomyślnie Wylogowany!");
+    toast.success("Zostałeś pomyślnie wylogowany!");
     navigate("/home");
   };
 

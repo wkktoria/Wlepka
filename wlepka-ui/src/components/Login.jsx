@@ -29,7 +29,9 @@ export default function Login() {
     if (actionData?.success) {
       loginSuccess(actionData.token, actionData.user);
       sessionStorage.removeItem("redirectPath");
-      navigate(to);
+      setTimeout(() => {
+        navigate(to);
+      }, 100);
     } else if (actionData?.errors) {
       toast.error(actionData.errors.message || "Logowanie nie powiodło się.");
     }
