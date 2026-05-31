@@ -7,16 +7,14 @@ import io.github.wkktoria.wlepka.repository.CustomerRepository;
 import io.github.wkktoria.wlepka.service.ICustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.authentication.password.CompromisedPasswordDecision;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,12 +62,10 @@ public class CustomerServiceImpl implements ICustomerService {
     private Map<String, String> validateEmailAndMobileNumber(final String email, final String mobileNumber) {
         Map<String, String> errors = new HashMap<>();
 
-        Optional<Customer> existingCustomer = customerRepository
-                .findByEmailOrMobileNumber(email, mobileNumber);
+        List<Customer> existingCustomers = customerRepository
+                .findAllByEmailOrMobileNumber(email, mobileNumber);
 
-        if (existingCustomer.isPresent()) {
-            Customer customer = existingCustomer.get();
-
+        for (Customer customer : existingCustomers) {
             if (customer.getEmail().equalsIgnoreCase(email)) {
                 errors.put("email", "Podany adres e-mail jest już w użyciu.");
             }
