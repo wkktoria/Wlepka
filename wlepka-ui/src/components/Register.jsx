@@ -201,7 +201,7 @@ export async function registerAction({ request }) {
     return { success: true };
   } catch (error) {
     if (error.response?.status === 400) {
-      return { success: false, errors: error.response?.data };
+      return { success: false, errors: error.response?.data?.errors };
     }
     throw new Response(
       error.response?.data?.errorMessage ||
