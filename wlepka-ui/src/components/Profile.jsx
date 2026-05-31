@@ -305,7 +305,7 @@ export async function profileAction({ request }) {
     const response = await apiClient.put("/profile", profileData);
     return { success: true, profileData: response.data };
   } catch (error) {
-    if (error.response?.status === 40) {
+    if (error.response?.status === 400 || error.response?.status === 422) {
       return { success: false, errors: error.response?.data };
     }
     throw new Response(

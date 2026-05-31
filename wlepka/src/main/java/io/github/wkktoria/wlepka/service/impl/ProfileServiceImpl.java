@@ -4,6 +4,7 @@ import io.github.wkktoria.wlepka.dto.request.UpdateProfileRequestDto;
 import io.github.wkktoria.wlepka.dto.response.ProfileResponseDto;
 import io.github.wkktoria.wlepka.entity.Address;
 import io.github.wkktoria.wlepka.entity.Customer;
+import io.github.wkktoria.wlepka.exception.NotUniqueException;
 import io.github.wkktoria.wlepka.repository.CustomerRepository;
 import io.github.wkktoria.wlepka.service.IProfileService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,16 @@ public class ProfileServiceImpl implements IProfileService {
     public ProfileResponseDto updateProfile(final UpdateProfileRequestDto updateProfileRequestDto) {
         Customer customer = getAuthenticatedCustomer();
         boolean isEmailUpdated = !customer.getEmail().equalsIgnoreCase(updateProfileRequestDto.email().trim());
+
+        if (isEmailUpdated && customerRepository.existsByEmail(updateProfileRequestDto.email().trim())) {
+            throw new NotUniqueException("email", "Istnieje już konto zarejestrowane na podany adres e-mail.");
+        }
+
+        boolean isMobileNumberUpdated = !customer.getMobileNumber().equals(updateProfileRequestDto.mobileNumber().trim());
+        if (isMobileNumberUpdated && customerRepository.existsByMobileNumber(updateProfileRequestDto.mobileNumber().trim())) {
+            throw new NotUniqueException("mobileNumber", "Podany numer telefonu jest już przypisany do innego konta.");
+        }
+
         BeanUtils.copyProperties(updateProfileRequestDto, customer);
 
         Address address = customer.getAddress();
