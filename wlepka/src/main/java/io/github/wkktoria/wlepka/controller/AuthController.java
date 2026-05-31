@@ -66,7 +66,7 @@ class AuthController {
     ResponseEntity<RegisterResponseDto> apiRegister(@Valid @RequestBody final RegisterRequestDto registerRequestDto) {
         RegisterResponseDto registerResponseDto = customerService.registerUser(registerRequestDto);
 
-        if (!registerResponseDto.errors().isEmpty()) {
+        if (registerResponseDto.errors() != null && !registerResponseDto.errors().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(registerResponseDto);
         }
