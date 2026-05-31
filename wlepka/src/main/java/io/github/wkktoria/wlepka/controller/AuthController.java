@@ -5,10 +5,12 @@ import io.github.wkktoria.wlepka.dto.request.LoginRequestDto;
 import io.github.wkktoria.wlepka.dto.request.RegisterRequestDto;
 import io.github.wkktoria.wlepka.dto.response.LoginResponseDto;
 import io.github.wkktoria.wlepka.dto.response.RegisterResponseDto;
+import io.github.wkktoria.wlepka.entity.Customer;
 import io.github.wkktoria.wlepka.service.ICustomerService;
 import io.github.wkktoria.wlepka.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +18,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +39,9 @@ class AuthController {
                     loginRequestDto.username(), loginRequestDto.password()
             ));
 
-            User loggedInUser = (User) authentication.getPrincipal();
-
-            UserDto userDto = UserDto.builder()
-                    .name(loggedInUser.getUsername())
-                    .build();
+            Customer loggedInUser = (Customer) authentication.getPrincipal();
+            UserDto userDto = UserDto.builder().build();
+            BeanUtils.copyProperties(loggedInUser, userDto);
 
             String token = jwtUtil.generateJwt(authentication);
 
