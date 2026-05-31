@@ -6,3 +6,9 @@ VALUES ('Angels', 'Szalone aniołki.', 8, 70, '/stickers/angels.jpg', CURRENT_TI
 
 INSERT INTO products(name, description, price, popularity, image_url, created_at, created_by, updated_at, updated_by)
 VALUES ('Jeep', 'Piesek jadący Jeepem.', 5, 60, '/stickers/jeep.jpg', CURRENT_TIMESTAMP, 'admin', NULL, NULL);
+
+INSERT INTO products(name, description, price, popularity, image_url, created_at, created_by, updated_at, updated_by)
+VALUES ('Cosmos', 'Kosmiczny kociak.', 8, 90, '/stickers/cosmos.jpg', CURRENT_TIMESTAMP, 'admin', NULL, NULL);
+
+INSERT INTO products(name, description, price, popularity, image_url, created_at, created_by, updated_at, updated_by)
+VALUES ('Corgi', 'Przyjaciel podróży corgi.', 15, 100, '/stickers/corgi.jpg', CURRENT_TIMESTAMP, 'admin', NULL, NULL);
