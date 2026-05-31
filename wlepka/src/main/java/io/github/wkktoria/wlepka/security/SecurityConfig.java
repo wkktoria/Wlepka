@@ -41,7 +41,7 @@ class SecurityConfig {
                             request.anyRequest().authenticated();
                         }
                 )
-                .addFilterBefore(new JwtValidatorFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JwtValidatorFilter(publicPaths), BasicAuthenticationFilter.class)
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .build();
