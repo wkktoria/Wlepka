@@ -21,7 +21,7 @@ const Header = () => {
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   const [isAdminMenuOpen, setAdminMenuOpen] = useState(false);
 
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const { totalQuantity } = useCart();
   const location = useLocation();
   const userMenuRef = useRef();
@@ -134,7 +134,9 @@ const Header = () => {
                     onClick={toggleUserMenu}
                     className="relative text-primary"
                   >
-                    <span className={navLinkClass}>Witaj, Jan Kowalski</span>
+                    <span
+                      className={navLinkClass}
+                    >{`Witaj, ${user.name.length > 5 ? `${user.name.slice(0, 5)}...` : user.name}`}</span>
                     <FontAwesomeIcon
                       icon={faAngleDown}
                       className="text-primary dark:text-light w-6 h-6"
