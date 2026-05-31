@@ -47,28 +47,11 @@ class SecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(final UserDetailsService userDetailsService,
-                                                final PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+    AuthenticationManager authenticationManager(final PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         ProviderManager providerManager = new ProviderManager(daoAuthenticationProvider);
         return providerManager;
-    }
-
-    @Bean
-    UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
-                .username("wkktoria")
-                .password("$2a$12$jK7Ekfve4x/sFgxWOrchNuelud19ADCQF4XRIaE2tIhoS.FvhgP8.")
-                .roles("USER")
-                .build();
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password("$2a$12$FLmEQzzAp6hGz6Qyeoj9tORWGIRyHNldjxvYSYpiHrAftld7gOMFK")
-                .roles("USER", "ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, admin);
     }
 
     @Bean

@@ -4,9 +4,12 @@ import io.github.wkktoria.wlepka.dto.UserDto;
 import io.github.wkktoria.wlepka.dto.request.LoginRequestDto;
 import io.github.wkktoria.wlepka.dto.request.RegisterRequestDto;
 import io.github.wkktoria.wlepka.dto.response.LoginResponseDto;
+import io.github.wkktoria.wlepka.entity.Customer;
+import io.github.wkktoria.wlepka.repository.CustomerRepository;
 import io.github.wkktoria.wlepka.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +34,7 @@ import java.util.List;
 class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+    private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -62,11 +65,10 @@ class AuthController {
 
     @PostMapping("/register")
     ResponseEntity<String> apiRegister(@Valid @RequestBody final RegisterRequestDto registerRequestDto) {
-        inMemoryUserDetailsManager.createUser(new User(
-                registerRequestDto.email(),
-                passwordEncoder.encode(registerRequestDto.password()),
-                List.of(new SimpleGrantedAuthority("USER"))
-        ));
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(registerRequestDto, customer);
+        customer.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
+        customerRepository.save(customer);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Zarejestrowano pomyślnie!");
