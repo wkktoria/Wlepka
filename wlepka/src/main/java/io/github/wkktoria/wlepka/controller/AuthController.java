@@ -40,7 +40,8 @@ class AuthController {
             ));
 
             Customer loggedInUser = (Customer) authentication.getPrincipal();
-            UserDto userDto = UserDto.builder().build();
+            UserDto userDto = new UserDto(loggedInUser.getCustomerId(), loggedInUser.getName(),
+                    loggedInUser.getEmail(), loggedInUser.getMobileNumber());
             BeanUtils.copyProperties(loggedInUser, userDto);
 
             String token = jwtUtil.generateJwt(authentication);
