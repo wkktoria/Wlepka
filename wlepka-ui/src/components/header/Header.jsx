@@ -17,7 +17,6 @@ const Header = () => {
     return localStorage.getItem("theme") === "dark" ? "dark" : "light";
   });
 
-  const isAdmin = true;
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   const [isAdminMenuOpen, setAdminMenuOpen] = useState(false);
 
@@ -26,6 +25,7 @@ const Header = () => {
   const location = useLocation();
   const userMenuRef = useRef();
   const navigate = useNavigate();
+  const isAdmin = user?.roles?.includes("ROLE_ADMIN");
 
   const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
   const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
