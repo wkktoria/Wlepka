@@ -38,7 +38,8 @@ class SecurityConfig {
                 .authorizeHttpRequests((request) -> {
                             publicPaths.forEach(path -> request
                                     .requestMatchers(path).permitAll());
-                            request.anyRequest().authenticated();
+                            request.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
+                            request.anyRequest().hasAnyRole("USER", "ADMIN");
                         }
                 )
                 .addFilterBefore(new JwtValidatorFilter(publicPaths), BasicAuthenticationFilter.class)

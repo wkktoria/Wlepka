@@ -3,13 +3,20 @@ package io.github.wkktoria.wlepka.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "customers")
@@ -36,5 +43,9 @@ public class Customer extends BaseEntity {
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Address address;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Set<Role> roles = new LinkedHashSet<>();
 
 }

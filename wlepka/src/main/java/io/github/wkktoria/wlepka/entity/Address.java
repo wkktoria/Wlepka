@@ -18,7 +18,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "addresses")
 @Getter
 @Setter
-public class Address {
+public class Address extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
