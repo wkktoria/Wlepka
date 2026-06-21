@@ -3,6 +3,7 @@ package io.github.wkktoria.wlepka.service.impl;
 import io.github.wkktoria.wlepka.dto.request.RegisterRequestDto;
 import io.github.wkktoria.wlepka.dto.response.RegisterResponseDto;
 import io.github.wkktoria.wlepka.entity.Customer;
+import io.github.wkktoria.wlepka.entity.Role;
 import io.github.wkktoria.wlepka.repository.CustomerRepository;
 import io.github.wkktoria.wlepka.service.ICustomerService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,11 @@ public class CustomerServiceImpl implements ICustomerService {
         Customer customer = new Customer();
         BeanUtils.copyProperties(registerRequestDto, customer);
         customer.setPasswordHash(passwordEncoder.encode(registerRequestDto.password()));
+
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        customer.setRoles(Set.of(role));
+
         customerRepository.save(customer);
 
         return RegisterResponseDto.builder()

@@ -1,5 +1,6 @@
 package io.github.wkktoria.wlepka.util;
 
+import io.github.wkktoria.wlepka.RoleMapper;
 import io.github.wkktoria.wlepka.constants.ApplicationConstants;
 import io.github.wkktoria.wlepka.entity.Customer;
 import io.jsonwebtoken.Jwts;
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 public class JwtUtil {
 
     private final Environment env;
+    private final RoleMapper roleMapper;
 
     public String generateJwt(final Authentication authentication) {
         String jwt;
@@ -30,6 +32,7 @@ public class JwtUtil {
                 .claim("username", fetchedUser.getName())
                 .claim("email", fetchedUser.getEmail())
                 .claim("mobileNumber", fetchedUser.getMobileNumber())
+                .claim("roles", roleMapper.grantedAuthoritiesToCommaSeparatedRoles(authentication.getAuthorities()))
                 .issuedAt(new java.util.Date())
                 .expiration(new java.util.Date((new java.util.Date().getTime() + 60 * 60 * 1000)))
                 .signWith(secretKey)

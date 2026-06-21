@@ -1,5 +1,6 @@
 package io.github.wkktoria.wlepka.controller;
 
+import io.github.wkktoria.wlepka.RoleMapper;
 import io.github.wkktoria.wlepka.dto.UserDto;
 import io.github.wkktoria.wlepka.dto.request.LoginRequestDto;
 import io.github.wkktoria.wlepka.dto.request.RegisterRequestDto;
@@ -31,6 +32,7 @@ class AuthController {
     private final AuthenticationManager authenticationManager;
     private final ICustomerService customerService;
     private final JwtUtil jwtUtil;
+    private final RoleMapper roleMapper;
 
     @PostMapping("/login")
     ResponseEntity<LoginResponseDto> apiLogin(@RequestBody final LoginRequestDto loginRequestDto) {
@@ -40,9 +42,9 @@ class AuthController {
             ));
 
             Customer loggedInUser = (Customer) authentication.getPrincipal();
-            UserDto userDto = new UserDto(loggedInUser.getCustomerId(), loggedInUser.getName(),
-                    loggedInUser.getEmail(), loggedInUser.getMobileNumber());
+            UserDto userDto = new UserDto();
             BeanUtils.copyProperties(loggedInUser, userDto);
+            userDto.setRoles(roleMapper.grantedAuthoritiesToCommaSeparatedRoles(authentication.getAuthorities()));
 
             String token = jwtUtil.generateJwt(authentication);
 

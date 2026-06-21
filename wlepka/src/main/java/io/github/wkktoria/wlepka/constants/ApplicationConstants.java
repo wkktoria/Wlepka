@@ -10,4 +10,6 @@ public class ApplicationConstants {
     public static final String JWT_SECRET_DEFAULT_VALUE = "6b2203431c53bf7f5a9ccbac586988c4ec05c898780f23a8ec8fcc50317f05a6";
     public static final String JWT_HEADER = "Authorization";
 
+    public static final String ROLE_COMMA_DELIMITER = ",";
+
 }

@@ -12,6 +12,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 
 import static io.github.wkktoria.wlepka.constants.ApplicationConstants.JWT_HEADER;
@@ -33,7 +33,8 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
     private final List<String> publicPaths;
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+                                    final FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(JWT_HEADER);
 
         if (authHeader != null) {
@@ -50,9 +51,10 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
                         .parseSignedClaims(jwt)
                         .getPayload();
                 String username = String.valueOf(claims.get("email"));
+                String roles = String.valueOf(claims.get("roles"));
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        username, null, Collections.emptyList()
+                        username, null, AuthorityUtils.commaSeparatedStringToAuthorityList(roles)
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception ex) {

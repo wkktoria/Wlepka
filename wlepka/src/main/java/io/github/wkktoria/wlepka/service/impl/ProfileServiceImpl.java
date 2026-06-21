@@ -75,11 +75,11 @@ public class ProfileServiceImpl implements IProfileService {
                 .name(customer.getName())
                 .email(customer.getEmail())
                 .mobileNumber(customer.getMobileNumber())
-                .street(customer.getAddress().getStreet())
-                .city(customer.getAddress().getCity())
-                .state(customer.getAddress().getState())
-                .postalCode(customer.getAddress().getPostalCode())
-                .country(customer.getAddress().getCountry())
+                .street(customer.getAddress() != null ? customer.getAddress().getStreet() : null)
+                .city(customer.getAddress() != null ? customer.getAddress().getCity() : null)
+                .state(customer.getAddress() != null ? customer.getAddress().getState() : null)
+                .postalCode(customer.getAddress() != null ? customer.getAddress().getPostalCode() : null)
+                .country(customer.getAddress() != null ? customer.getAddress().getCountry() : null)
                 .build();
     }
 
